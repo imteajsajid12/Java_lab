@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  # PHP service
+
+  # MySQL database service
+
+  mysql:
+    container_name: java_mysql
+    image: 'mysql/mysql-server:8.0'
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: java
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+#    volumes:
+#       - ./.Docker/data/mysql:/var/lib/mysql
+      # - mysql-data:/var/lib/mysql
+    networks:
+       - app-java
+
+
+
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: java_phpmyadmin
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+    #    restart: always
+      UPLOAD_LIMIT: 300M
+    ports:
+      - 8082:80
+    networks:
+      - app-java
+networks:
+  app-java:
+    driver: bridge
+
+# volumes:
+#   mysql-data:
