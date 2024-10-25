@@ -9,6 +9,7 @@ public class ProductDAO {
         this.connection = DatabaseConnection.getConnection();
     }
 
+
     public void addProduct(String name, double purchasePrice, double sellingPrice, int quantity, double discount) throws SQLException {
         String sql = "INSERT INTO products (product_name, purchase_price, selling_price, quantity, discount) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -100,6 +101,49 @@ public class ProductDAO {
                         ", Selling Price: $" + rs.getDouble("selling_price") +
                         ", Quantity: " + rs.getInt("quantity") +
                         ", Discount: " + rs.getDouble("discount") + "%");
+            }
+        }
+    }
+    public void displayTotalStockWithProductNames() throws SQLException {
+        String sql = "SELECT product_name, quantity FROM products";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            System.out.printf("%-20s %-10s\n", "Product Name", "Quantity");
+            System.out.println("--------------------------------------------------");
+
+            int totalQuantity = 0;
+            while (rs.next()) {
+                String productName = rs.getString("product_name");
+                int quantity = rs.getInt("quantity");
+                totalQuantity += quantity;
+
+                System.out.printf("%-20s %-10d\n", productName, quantity);
+            }
+
+            System.out.println("--------------------------------------------------");
+            System.out.printf("Total Quantity of All Products: %d\n", totalQuantity);
+        }
+    }
+    public void searchProductByName1(String productName) throws SQLException {
+        String sql = "SELECT * FROM products WHERE product_name LIKE ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + productName + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            boolean found = false;
+            while (rs.next()) {
+                found = true;
+                System.out.println("ID: " + rs.getInt("product_id") +
+                        ", Name: " + rs.getString("product_name") +
+                        ", Purchase Price: $" + rs.getDouble("purchase_price") +
+                        ", Selling Price: $" + rs.getDouble("selling_price") +
+                        ", Quantity: " + rs.getInt("quantity") +
+                        ", Discount: " + rs.getDouble("discount") + "%");
+            }
+
+            if (!found) {
+                System.out.println("No products found with the name: " + productName);
             }
         }
     }

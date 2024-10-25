@@ -13,7 +13,7 @@ public class UserDAO {
         String sql = "INSERT INTO users (username, password, name, contact) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
-            stmt.setString(2, password); // You might want to hash this password
+            stmt.setString(2, password);
             stmt.setString(3, name);
             stmt.setString(4, contact);
             stmt.executeUpdate();
@@ -26,7 +26,7 @@ public class UserDAO {
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-            return rs.next(); // returns true if user exists
+            return rs.next();
         }
     }
 
